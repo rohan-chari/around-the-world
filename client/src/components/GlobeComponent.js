@@ -13,7 +13,7 @@ const GlobeComponent = () => {
     // Initialize globe settings
     if (globeEl.current) {
       globeEl.current.controls().autoRotate = true;
-      globeEl.current.controls().autoRotateSpeed = 0.25;
+      globeEl.current.controls().autoRotateSpeed = 0.05;
     }
   }, []);
 
@@ -24,12 +24,14 @@ const GlobeComponent = () => {
             backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"
             hexPolygonsData={countries.features}
             hexPolygonResolution={3}
-            hexPolygonMargin={0.01} // Small margin to reduce "border" effect from hex edges
+            hexPolygonMargin={0.001} // Small margin to reduce "border" effect from hex edges
             hexPolygonUseDots={false}
             hexPolygonColor={() => `rgba(${Math.round(Math.random() * 255)}, ${Math.round(Math.random() * 255)}, ${Math.round(Math.random() * 255)}, 0)`}
             polygonsData={countries.features} // Adding this line to draw country borders
-            polygonStrokeColor={() => '#f5c5ae'} // You can specify the color for the borders
+            polygonStrokeColor={() => '#f5c5ae'} //  specify the color for the borders
+            polygonCapColor={() => 'rgba(0, 0, 0, 0)'} // fill of the polygons transparent
             onPolygonClick={(country) => {
+                console.log('clicked country', country);
                 if(globeEl.current){
                     smoothZoomTo(globeEl.current,(country.bbox[1] + country.bbox[3])/2,(country.bbox[0] + country.bbox[2])/2, .65);
                     globeEl.current.controls().autoRotate = false;
