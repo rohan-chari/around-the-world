@@ -1,32 +1,38 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Globe from 'react-globe.gl';
-import { useNavigate } from 'react-router-dom';
+import { smoothZoomTo } from '../utils/smoothZoomTo';
+import { useLocation } from 'react-router-dom';
 
-const GlobeComponent = () => {
+
+
+const DetailedCountryGlobe = () => {
   const globeEl = useRef();
+
   const [countries, setCountries] = useState({ features: [] });
-  const navigate = useNavigate();
+  const location = useLocation();
+
+  const countryCode = location.state?.countryCode;
+  const latitude = location.state?.latitude;
+  const longitude = location.state?.longitude;
 
   useEffect(() => {
-    // Fetch countries geojson
-    fetch('/datasets/countries_world.geojson').then(res => res.json()).then(setCountries);
-    // Initialize globe settings
+    fetch('/datasets/countries_' + countryCode + '.json').then(res => res.json()).then(setCountries);
+
     if (globeEl.current) {
-      globeEl.current.controls().autoRotate = true;
-      globeEl.current.controls().autoRotateSpeed = 0.05;
+      globeEl.current.controls().autoRotate = false;
+      smoothZoomTo(globeEl.current, latitude, longitude, .65, countryCode);
     }
-  }, []);
+  }, [countryCode,latitude,longitude]);
 
-    const onPolygonClick = async (country) => {
-        if(globeEl.current){
-            const targetLat = (country.bbox[1] + country.bbox[3]) / 2;
-            const targetLng = (country.bbox[0] + country.bbox[2]) / 2;
-            navigate(`/country/${country.properties.ADM0_A3}`, { state: { countryCode: country.properties.ADM0_A3, latitude: targetLat, longitude: targetLng } });
-        }
-    };
+  const onPolygonClick = async (country) => {
+    if(globeEl.current){
+        console.log('USAUSUAUSAU',country)
+    }
+};
 
-    return (
-        <Globe
+
+  return (
+    <Globe
             ref={globeEl}
             globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
             backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"
@@ -45,8 +51,7 @@ const GlobeComponent = () => {
                 Population: <i>${d.POP_EST}</i>
             `}
         />
-    );
-
+  );
 };
 
-export default GlobeComponent;
+export default DetailedCountryGlobe;

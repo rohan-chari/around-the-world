@@ -1,7 +1,5 @@
-export const smoothZoomTo = (globeRef, targetLat, targetLng, targetAltitude, country, duration = 1000) => {
+export const smoothZoomTo = (globeRef, targetLat, targetLng, targetAltitude, countryCode , duration = 2500) => {
     const startTime = Date.now();
-  
-    console.log('countrey',country)
 
     const startPOV = globeRef.pointOfView();
     const endPOV = { lat: targetLat, lng: targetLng, altitude: targetAltitude };
@@ -21,7 +19,7 @@ export const smoothZoomTo = (globeRef, targetLat, targetLng, targetAltitude, cou
         altitude: startPOV.altitude + (endPOV.altitude - startPOV.altitude) * easedFraction,
       };
 
-      if(country.properties.ADMIN === 'United States of America')
+      if(countryCode === 'USA')
         {
             nextPOV.altitude *= 1.5
         }
