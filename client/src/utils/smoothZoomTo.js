@@ -1,10 +1,12 @@
-export const smoothZoomTo = (globeRef, targetLat, targetLng, targetAltitude, duration = 1000) => {
+export const smoothZoomTo = (globeRef, targetLat, targetLng, targetAltitude, country, duration = 1000) => {
     const startTime = Date.now();
   
-    // Assuming you have a way to get the current POV. This is pseudocode.
+    console.log('countrey',country)
+
     const startPOV = globeRef.pointOfView();
     const endPOV = { lat: targetLat, lng: targetLng, altitude: targetAltitude };
-  
+
+    
     function animate() {
       const elapsedTime = Date.now() - startTime;
       const fraction = Math.min(1, elapsedTime / duration);
@@ -18,7 +20,12 @@ export const smoothZoomTo = (globeRef, targetLat, targetLng, targetAltitude, dur
         lng: startPOV.lng + (endPOV.lng - startPOV.lng) * easedFraction,
         altitude: startPOV.altitude + (endPOV.altitude - startPOV.altitude) * easedFraction,
       };
-  
+
+      if(country.properties.ADMIN === 'United States of America')
+        {
+            nextPOV.altitude *= 1.5
+        }
+    
       // Update the globe's POV
       globeRef.pointOfView(nextPOV);
   

@@ -9,13 +9,24 @@ const GlobeComponent = () => {
 
   useEffect(() => {
     // Fetch countries geojson
-    fetch('/datasets/ne_110m_admin_0_countries.geojson').then(res => res.json()).then(setCountries);
+    fetch('/datasets/countries_world.geojson').then(res => res.json()).then(setCountries);
     // Initialize globe settings
     if (globeEl.current) {
       globeEl.current.controls().autoRotate = true;
       globeEl.current.controls().autoRotateSpeed = 0.05;
     }
   }, []);
+
+    const onPolygonClick = async (country) => {
+        if(globeEl.current){
+            console.log('country',country)
+            const targetLat = (country.bbox[1] + country.bbox[3]) / 2;
+            const targetLng = (country.bbox[0] + country.bbox[2]) / 2;
+            fetchDetailedCountryGeoJSON(country.properties.ISO_A2).then(setCountries);
+            smoothZoomTo(globeEl.current, targetLat, targetLng, .65, country);
+            globeEl.current.controls().autoRotate = false;
+        }
+    };
 
     return (
         <Globe
@@ -30,13 +41,7 @@ const GlobeComponent = () => {
             polygonsData={countries.features} // Adding this line to draw country borders
             polygonStrokeColor={() => '#f5c5ae'} //  specify the color for the borders
             polygonCapColor={() => 'rgba(0, 0, 0, 0)'} // fill of the polygons transparent
-            onPolygonClick={(country) => {
-                console.log('clicked country', country);
-                if(globeEl.current){
-                    smoothZoomTo(globeEl.current,(country.bbox[1] + country.bbox[3])/2,(country.bbox[0] + country.bbox[2])/2, .65);
-                    globeEl.current.controls().autoRotate = false;
-                }
-            }}
+            onPolygonClick={onPolygonClick}
             polygonAltitude={.006}
             polygonLabel={({ properties: d }) => `
                 <b>${d.ADMIN} (${d.ISO_A2})</b> <br />
@@ -44,6 +49,12 @@ const GlobeComponent = () => {
             `}
         />
     );
+
+    async function fetchDetailedCountryGeoJSON(isoCode) {
+        const response = await fetch(`/datasets/countries_USA.json`);
+        const data = await response.json();
+        return data;
+    }
 };
 
 export default GlobeComponent;
