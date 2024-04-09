@@ -26,7 +26,11 @@ const DetailedCountryGlobe = () => {
 
   const onPolygonClick = async (country) => {
     if(globeEl.current){
-        console.log('USAUSUAUSAU',country)
+      const countryFeatureCollection = {
+        type: "FeatureCollection",
+        features: [country] 
+      };
+      setCountries(countryFeatureCollection);
     }
 };
 

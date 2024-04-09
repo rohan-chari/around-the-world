@@ -21,7 +21,8 @@ const GlobeComponent = () => {
         if(globeEl.current){
             const targetLat = (country.bbox[1] + country.bbox[3]) / 2;
             const targetLng = (country.bbox[0] + country.bbox[2]) / 2;
-            navigate(`/country/${country.properties.ADM0_A3}`, { state: { countryCode: country.properties.ADM0_A3, latitude: targetLat, longitude: targetLng } });
+            const data = await fetch('/datasets/countries_' + country.properties.ADM0_A3 + '.json').then(res => res.json())
+            navigate(`/country/${country.properties.ADM0_A3}`, { state: { countryCode: country.properties.ADM0_A3, latitude: targetLat, longitude: targetLng, borders: data } });
         }
     };
 

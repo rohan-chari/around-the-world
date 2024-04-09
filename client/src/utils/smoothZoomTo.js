@@ -1,4 +1,5 @@
 export const smoothZoomTo = (globeRef, targetLat, targetLng, targetAltitude, countryCode , duration = 2500) => {
+    //try setting state of setCountries here.. and doing it after zooming out
     const startTime = Date.now();
 
     const startPOV = globeRef.pointOfView();
